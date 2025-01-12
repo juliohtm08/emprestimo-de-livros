@@ -8,18 +8,17 @@ const users = [
 ];
 
 module.exports = {
-  // Função para obter todos os usuários no array 'users'
+  // Obtem todos os usuários no array 'users'
   getAllUsers: () => users,
 
-  // Função para buscar um usuário pelo ID. Utiliza o método 'find' do array
+  // Busca um usuário pelo ID
   getUserById: (id) => users.find((user) => user.id === id),
 
-  // Função para buscar um usuário pelo email. Também utiliza o método 'find'
+  // Busca um usuário pelo email
   getUserByEmail: (email) => users.find((user) => user.email === email),
 
-  // Função para criar um novo usuário
+  // Cria um novo usuário
   createUser: (name, email, password) => {
-    // Cria um novo objeto de usuário com ID único, nome, email e senha hasheada
     const newUser = {
       id: uuid(),
       name,
