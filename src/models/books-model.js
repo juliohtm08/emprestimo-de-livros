@@ -53,4 +53,20 @@ module.exports = {
 
     return deletedBook;
   },
+
+  takeBook: (id) => {
+    const bookIndex = books.findIndex((book) => book.id === id);
+
+    if (bookIndex === -1) throw new HttpError(404, 'Livro não encontrado!');
+
+    books[bookIndex].quantityAvailble -= 1;
+  },
+
+  returnBook: (id) => {
+    const bookIndex = books.findIndex((book) => book.id === id);
+
+    if (bookIndex === -1) throw new HttpError(404, 'Livro não encontrado!');
+
+    books[bookIndex].quantityAvailble += 1;
+  },
 };
