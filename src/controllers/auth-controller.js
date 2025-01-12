@@ -1,6 +1,7 @@
 const usersModel = require('../models/users-model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const HttpError = require('../errors/HTTPError');
 
 module.exports = {
   // POST /auth/register
@@ -14,9 +15,7 @@ module.exports = {
       typeof password !== 'string'
     ) {
       // Retorna um erro caso algum campo esteja inválido ou ausente
-      return res
-        .status(400)
-        .json({ message: 'Todos os campos são obrigatórios' });
+      throw new HttpError(400, 'Todos os campos são obrigatórios');
     }
 
     // Verifica se já existe um usuário cadastrado com o mesmo e-mail
@@ -24,7 +23,7 @@ module.exports = {
 
     if (existingUser) {
       // Retorna um erro se o e-mail já estiver cadastrado
-      return res.status(400).json({ message: 'E-mail já cadastrado!' });
+      throw new HttpError(400, 'E-mail já cadastrado');
     }
 
     // Cria um novo usuário usando o modelo de dados
@@ -39,23 +38,21 @@ module.exports = {
     const { email, password } = req.body;
 
     if (typeof email !== 'string' || typeof password !== 'string') {
-      return res
-        .status(400)
-        .json({ message: 'Todos os campos são obrigatórios' });
+      throw new HttpError(400, 'Todos os campos são obrigatórios');
     }
 
     // Busca o usuário no modelo pelo e-mail fornecido
     const user = usersModel.getUserByEmail(email);
 
     if (!user) {
-      return res.status(404).json({ message: 'Usuário não encontrado!' });
+      throw new HttpError(404, 'Usuário não encontrado!');
     }
 
     // Compara a senha fornecida com a senha armazenada no banco de dados
     const isValidPassword = bcrypt.compareSync(password, user.password);
 
     if (!isValidPassword) {
-      return res.status(401).json({ message: 'Credenciais incorretas!' });
+      throw new HttpError(401, 'Credenciais inválidas!');
     }
 
     // Cria o payload do token JWT com informações do usuário
